@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include "vectorTest.hpp"
 #include "mapTest.hpp"
+#include "workTest.hpp"
+#include "workerThreadTest.hpp"
 
 int main(int argc, char** argv)
 {

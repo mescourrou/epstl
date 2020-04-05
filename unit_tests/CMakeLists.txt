@@ -6,6 +6,8 @@ add_executable(Epstl_test main.cpp
     quadtreeTest.cpp quadtreeTest.hpp
     quadtreeRegionTest.cpp quadtreeRegionTest.hpp
     mathTest.cpp mathTest.hpp
+    workTest.cpp workTest.hpp
+    workerThreadTest.cpp workerThreadTest.hpp
     geometryToolsTest.cpp)
 target_link_libraries(Epstl_test gtest epstl)
 
@@ -16,5 +18,3 @@ add_custom_command(TARGET Epstl_test POST_BUILD
      "${CMAKE_CURRENT_BINARY_DIR}/data"
   COMMENT "Copying test data output directory")
 endif()
-
-
