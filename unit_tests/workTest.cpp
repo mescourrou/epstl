@@ -52,6 +52,7 @@ TEST_F(WorkTest, CallWithOneArgs)
     EXPECT_TRUE(callEffectuated2);
 }
 
+#if __cplusplus >= 201702L
 /*
  * Test running for 2 arguments callback
  */
@@ -63,6 +64,7 @@ TEST_F(WorkTest, CallWithTwoArgs)
     w.run();
     EXPECT_TRUE(callEffectuated3);
 }
+#endif
 
 }
 

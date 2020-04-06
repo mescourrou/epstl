@@ -54,6 +54,7 @@ class abstract_work_t
  * bla => 4.2
  * @endcode
  */
+#if __cplusplus >= 201702L
 template<typename ...Args>
 class work : public abstract_work_t
 {
@@ -82,6 +83,36 @@ class work : public abstract_work_t
 
 
 };
+#else
+template<typename arg_t>
+class work : public abstract_work_t
+{
+  public:
+    /**
+     * @brief Construct a work with the given function
+     * @param func Function to do
+     * @param arguments Arguments of the function
+     */
+    explicit work(const std::function<void(arg_t)>& func,
+                  arg_t argument) : m_func(func),
+        m_argument(argument) {}
+    ~work() override = default;
+
+    /**
+     * @brief Run the job
+     */
+    void run() override
+    {
+        m_func(m_argument);
+    }
+
+  private:
+    std::function<void(arg_t)> m_func; ///< Function to activate in run method
+    arg_t m_argument; ///< Arguments of the function
+
+
+};
+#endif
 
 /**
  * @brief Specialization of Work to manage functions without arguments.
