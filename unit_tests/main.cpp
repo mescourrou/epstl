@@ -3,6 +3,7 @@
 #include "mapTest.hpp"
 #include "workTest.hpp"
 #include "workerThreadTest.hpp"
+#include "pipelineTest.hpp"
 
 int main(int argc, char** argv)
 {

@@ -8,7 +8,8 @@ add_executable(Epstl_test main.cpp
     mathTest.cpp mathTest.hpp
     workTest.cpp workTest.hpp
     workerThreadTest.cpp workerThreadTest.hpp
-    geometryToolsTest.cpp)
+    geometryToolsTest.cpp
+    pipelineTest.cpp pipelineTest.hpp)
 target_link_libraries(Epstl_test gtest epstl)
 
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/data" AND IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/data")
