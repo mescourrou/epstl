@@ -6,6 +6,7 @@
 #include <semaphore.h>
 #include <thread>
 #include <condition_variable>
+#include <atomic>
 
 namespace epstl
 {
@@ -29,10 +30,7 @@ class process : public abstract_process
     process(std::function<type_out(type_in)> func) : m_func(func) {}
     ~process() override = default;
 
-    void* operator()(void* in_object) override final
-    {
-        return (void*)(new type_out(exec(type_in(*((type_in*)in_object)))));
-    }
+    void* operator()(void* in_object) override final;
 
   protected:
     virtual type_out exec(type_in in_object)
@@ -73,19 +71,20 @@ class pipeline
         m_semaphores.push_back(new std::condition_variable());
         m_passing_arguments.push_back(nullptr);
         m_mutexes.push_back(new std::mutex);
-        m_running.push_back(false);
-        m_threads.push_back(std::thread(&pipeline::execute_process, this, p,
-                                        m_process_count));
         m_process_count++;
-        m_last_item_position = m_process_count;
+        m_threads.push_back(std::thread(&pipeline::execute_process, this, p,
+                                        m_process_count - 1));
 
     }
     void feed(T first_element)
     {
+        m_jobs_in_pipeline++;
+        std::lock_guard<std::mutex> lock_waiting_list(m_waiting_list_access);
         m_waiting_list.push_back(first_element);
-        m_last_item_position = 0;
         if (m_semaphores.size() > 0)
+        {
             m_semaphores.front()->notify_all();
+        }
     }
     void stop()
     {
@@ -94,13 +93,23 @@ class pipeline
         {
             s->notify_all();
         }
+        for (auto& t : m_threads)
+        {
+            if (t.joinable())
+                t.join();
+        }
+        for (auto* m : m_mutexes)
+        {
+            m->lock();
+            m->unlock();
+        }
     }
 
     void wait_end()
     {
-        std::mutex mt;
-        std::unique_lock<std::mutex> lock(mt);
-        while (m_last_item_position != m_process_count)
+        std::mutex mtx;
+        std::unique_lock<std::mutex> lock(mtx);
+        while (m_jobs_in_pipeline != 0)
         {
             m_end_cv.wait(lock);
         }
@@ -110,15 +119,15 @@ class pipeline
     void execute_process(abstract_process* p, const size_t process_id);
 
     std::deque<T> m_waiting_list;
+    std::mutex m_waiting_list_access;
     std::vector<std::thread> m_threads;
     std::vector<std::condition_variable*> m_semaphores;
     std::vector<void*> m_passing_arguments;
     std::vector<std::mutex*> m_mutexes;
-    std::vector<bool> m_running;
     std::condition_variable m_end_cv;
     bool m_continue = true;
+    std::atomic_size_t m_jobs_in_pipeline = 0;
     size_t m_process_count = 0;
-    size_t m_last_item_position = 0;
     process_list* m_pipeline = nullptr;
     process_list* m_lastProcess = nullptr;
 };
@@ -126,8 +135,7 @@ class pipeline
 template<class T>
 pipeline<T>::~pipeline()
 {
-    for (auto& t : m_threads)
-        t.join();
+    stop();
 }
 
 template<class T>
@@ -139,6 +147,9 @@ void pipeline<T>::execute_process(abstract_process* p, const size_t process_id)
         std::unique_lock<std::mutex> lock(*(m_mutexes.at(process_id)));
         if (process_id > 0)
         {
+            if(!m_semaphores.at(process_id))
+                throw std::runtime_error(std::string("Null semaphore #") + std::to_string(
+                            process_id));
             m_semaphores.at(process_id)->wait(lock, [this, process_id]()
             {
                 return m_passing_arguments.at(process_id) != nullptr || !m_continue;
@@ -147,42 +158,68 @@ void pipeline<T>::execute_process(abstract_process* p, const size_t process_id)
             {
                 return;
             }
+            if(m_passing_arguments.at(process_id) == nullptr)
+                throw std::runtime_error("Argument disapeared");
             arg = m_passing_arguments.at(process_id);
+
         }
         else
         {
-            m_semaphores.at(process_id)->wait(lock, [this, process_id]()
+            if(!m_semaphores.front())
+                throw std::runtime_error("Null semaphore #0");
+            m_semaphores.front()->wait(lock, [this]()
             {
-                return m_waiting_list.size() > 0 || !m_continue;
+                m_waiting_list_access.lock();
+                if (m_waiting_list.size() > 0)
+                    return true;
+                m_waiting_list_access.unlock();
+                return !m_continue;
             });
             if (!m_continue)
             {
                 return;
             }
-            arg = new T(m_waiting_list.front());
-            m_waiting_list.pop_front();
+            else
+            {
+                arg = new T(m_waiting_list.front());
+                m_waiting_list.pop_front();
+                m_waiting_list_access.unlock();
+            }
+
         }
         void* ret = (*p)(arg);
         if (process_id + 1 < m_process_count)
         {
-            std::unique_lock<std::mutex> lockNext(*m_mutexes.at(process_id + 1));
+            std::lock_guard<std::mutex> lockNext(*m_mutexes.at(process_id + 1));
             m_passing_arguments.at(process_id + 1) = ret;
-            lockNext.unlock();
+
             m_passing_arguments.at(process_id) = nullptr;
             lock.unlock();
             m_semaphores.at(process_id + 1)->notify_all();
         }
         else
         {
+            m_jobs_in_pipeline--;
             m_passing_arguments.at(process_id) = nullptr;
             lock.unlock();
-        }
-        if (m_last_item_position == process_id && m_waiting_list.empty())
-        {
-            m_last_item_position++;
             m_end_cv.notify_all();
         }
     }
+}
+
+template < typename type_in, typename type_out>
+void* process<type_in, type_out>::operator()(void* in_object)
+{
+    // If not in c++17, void type for type_out won't work
+#if __cplusplus >= 201702L
+    if constexpr (std::is_void_v<type_out>)
+    {
+        exec(std::move(type_in(*((type_in*)in_object))));
+        return nullptr;
+    }
+    else
+#endif
+        return (void*)(new type_out(std::move(exec(type_in(*((type_in*)in_object))))));
 }
 
 } // namespace epstl
