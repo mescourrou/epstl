@@ -15,16 +15,18 @@ namespace epstl
 
 /**
  * @enum behaviour_t
- * @brief Flags for quadtree behaviour
+ * @brief Flags for quadtree behaviour.
  */
 enum behaviour_t
 {
-    quadtree_no_replace = 1,        ///< Do not replace data when using insert
-    quadtree_multithread = 1 << 1   ///< Use multithread operation when possible
+    /// Do not replace data when using insert.
+    quadtree_no_replace = 1,
+    /// Use multithread operation when possible.
+    quadtree_multithread = 1 << 1
 };
 
 /**
- * @brief Point quadtree
+ * @brief Point quadtree.
  *
  * Create a quadtree structure with one point maximum by quadrant.
  *
@@ -59,7 +61,7 @@ class quadtree : public container
 {
   protected:
     /**
-     * @brief Carthesian position
+     * @brief Carthesian position.
      */
     struct position_t
     {
@@ -69,7 +71,7 @@ class quadtree : public container
     };
 
     /**
-     * @brief Rectangular bound with center position
+     * @brief Rectangular bound with center position.
      */
     struct rect_bound_t
     {
@@ -81,10 +83,10 @@ class quadtree : public container
         position_t center;
 
         /**
-         * @brief Tells if the coordinates are inside the bounds
-         * @param x X coordinate of the point to test
-         * @param y Y coordinate of the point to test
-         * @return True if the point is inside
+         * @brief Tells if the coordinates are inside the bounds.
+         * @param x X coordinate of the point to test.
+         * @param y Y coordinate of the point to test.
+         * @return True if the point is inside.
          */
         bool isInside(key_t x, key_t y) const
         {
@@ -93,7 +95,7 @@ class quadtree : public container
     };
 
     /**
-     * @brief Recursive quadrant structure for point quadtree
+     * @brief Recursive quadrant structure for point quadtree.
      */
     struct quadrant_t
     {
@@ -109,12 +111,12 @@ class quadtree : public container
 
   public:
     /**
-     * @brief Construct a quadtree with the given center and width/height
-     * @param center_x X coordinate of the center
-     * @param center_y Y coordinate of the center
-     * @param width Width of the root
-     * @param height Height of the root
-     * @todo Size problem
+     * @brief Construct a quadtree with the given center and width/height.
+     * @param center_x X coordinate of the center.
+     * @param center_y Y coordinate of the center.
+     * @param width Width of the root.
+     * @param height Height of the root.
+     * @todo Size problem.
      */
 #if __cplusplus >= 201702L
     explicit quadtree(key_t center_x, key_t center_y, key_t width, key_t height) :
@@ -129,20 +131,20 @@ class quadtree : public container
 #endif
 
     /**
-     * @brief Construct a quadtree centered on 0,0, with the given width/height
-     * @param width Width of the root
-     * @param height Height of the root
+     * @brief Construct a quadtree centered on 0,0, with the given width/height.
+     * @param width Width of the root.
+     * @param height Height of the root.
      */
     explicit quadtree(key_t width, key_t height) :
         quadtree<key_t, item_t>(0, 0, width, height) {}
 
     /**
-     * @brief Construct a quadtree with the given center and width/height and the default value
-     * @param center_x X coordinate of the center
-     * @param center_y Y coordinate of the center
-     * @param width Width of the root
-     * @param height Height of the root
-     * @param default_value Default value to use
+     * @brief Construct a quadtree with the given center and width/height and the default value.
+     * @param center_x X coordinate of the center.
+     * @param center_y Y coordinate of the center.
+     * @param width Width of the root.
+     * @param height Height of the root.
+     * @param default_value Default value to use.
      */
     explicit quadtree(key_t center_x, key_t center_y, key_t width, key_t height,
                       const item_t& default_value) :
@@ -159,10 +161,10 @@ class quadtree : public container
     quadtree& operator=(quadtree&& move);
 
     /**
-     * @brief Get the size
+     * @brief Get the size.
      *
-     * Override of container::size
-     * @return Return the number of points
+     * Override of container::size.
+     * @return Return the number of points.
      */
     size_t size() const noexcept override
     {
@@ -181,7 +183,7 @@ class quadtree : public container
     }
 
     /**
-     * @brief Get the current default value of the tree
+     * @brief Get the current default value of the tree.
      */
     virtual const item_t& default_value() const noexcept final
     {
@@ -194,14 +196,14 @@ class quadtree : public container
     virtual item_t& at(key_t x, key_t y);
 
     /**
-     * @brief Set the behaviour flags
+     * @brief Set the behaviour flags.
      *
      * See @ref epstl::behaviour_t enum to create the flag.
      *
      * @code
      * set_behaviour_flag(epstl::quadtree_no_replace | epstl::quadtree_multithread)
      * @endcode
-     * @param flag Combinaison of behaviour_t
+     * @param flag Combinaison of behaviour_t.
      */
     virtual void set_behaviour_flag(uint8_t flag) final
     {
@@ -209,8 +211,8 @@ class quadtree : public container
     }
 
     /**
-     * @brief Print the quadtree in the given stream
-     * @param stream Stream to print inside
+     * @brief Print the quadtree in the given stream.
+     * @param stream Stream to print inside.
      */
     virtual void print(std::ostream& stream) const
     {
@@ -266,20 +268,29 @@ class quadtree : public container
 
 
 
-    quadrant_t* m_root = nullptr;   ///< Root quadrant of the quadtree
-    size_t m_size = 0;              ///< Number of points in the tree
-    size_t m_depth = 0;             ///< Depth of the tree
-    item_t m_default_value;         ///< Default value of the items
-    item_t m_exposed_default_value; ///< Default value for mutable reference
-    key_t m_height;                 ///< Height of the root quadrant
-    key_t m_width;                  ///< Width of the root quadrant
-    position_t m_center;            ///< Center of the quadrant
+    /// Root quadrant of the quadtree.
+    quadrant_t* m_root = nullptr;
+    /// Number of points in the tree.
+    size_t m_size = 0;
+    /// Depth of the tree.
+    size_t m_depth = 0;
+    /// Default value of the items.
+    item_t m_default_value;
+    /// Default value for mutable reference.
+    item_t m_exposed_default_value;
+    /// Height of the root quadrant.
+    key_t m_height;
+    /// Width of the root quadrant.
+    key_t m_width;
+    /// Center of the quadrant.
+    position_t m_center;
 
-    uint8_t m_behaviour_flag = 0;   ///< Behaviour flags
+    /// Behaviour flags
+    uint8_t m_behaviour_flag = 0;
 };
 
 /**
- * @brief Copy constructor
+ * @brief Copy constructor.
  */
 template<typename key_t, typename item_t>
 quadtree<key_t, item_t>::quadtree(const quadtree<key_t, item_t>& copy) :
@@ -291,7 +302,7 @@ quadtree<key_t, item_t>::quadtree(const quadtree<key_t, item_t>& copy) :
 }
 
 /**
- * @brief Move constructor
+ * @brief Move constructor.
  */
 template<typename key_t, typename item_t>
 quadtree<key_t, item_t>::quadtree(quadtree<key_t, item_t>&& move) :
@@ -306,9 +317,9 @@ quadtree<key_t, item_t>::quadtree(quadtree<key_t, item_t>&& move) :
 }
 
 /**
- * @brief Destructor
+ * @brief Destructor.
  *
- * Free all dynamically allocated quadrants
+ * Free all dynamically allocated quadrants.
  */
 template<typename key_t, typename item_t>
 quadtree<key_t, item_t>::~quadtree()
@@ -317,7 +328,7 @@ quadtree<key_t, item_t>::~quadtree()
 }
 
 /**
- * @brief Assignation operator
+ * @brief Assignation operator.
  */
 template<typename key_t, typename item_t>
 quadtree<key_t, item_t>&
@@ -336,7 +347,7 @@ quadtree<key_t, item_t>::operator=(const quadtree& copy)
 }
 
 /**
- * @brief Assignation operator with move
+ * @brief Assignation operator with move.
  */
 template<typename key_t, typename item_t>
 quadtree<key_t, item_t>&
@@ -359,14 +370,14 @@ quadtree<key_t, item_t>::operator=(quadtree&& move)
 }
 
 /**
- * @brief Insert the item at the given coordinates
+ * @brief Insert the item at the given coordinates.
  *
  * Update the depth.
  *
- * @param x X coordinate of the item
- * @param y Y coordinate of the item
- * @param item Item to copy in the tree
- * @return Size of the new tree (number of items)
+ * @param x X coordinate of the item.
+ * @param y Y coordinate of the item.
+ * @param item Item to copy in the tree.
+ * @return Size of the new tree (number of items).
  */
 template<typename key_t, typename item_t>
 size_t quadtree<key_t, item_t>::insert(key_t x, key_t y, const item_t& item)
@@ -394,13 +405,13 @@ size_t quadtree<key_t, item_t>::insert(key_t x, key_t y, const item_t& item)
 }
 
 /**
- * @brief Get a constant reference on the item at the given coordinates
+ * @brief Get a constant reference on the item at the given coordinates.
  *
  * If there is no point at the given coordinates, the default value is returned.
  *
- * @param x X coordinate to get
- * @param y Y coordinate to get
- * @return Constant reference on the value
+ * @param x X coordinate to get.
+ * @param y Y coordinate to get.
+ * @return Constant reference on the value.
  */
 template<typename key_t, typename item_t>
 const item_t& quadtree<key_t, item_t>::at(key_t x, key_t y) const
@@ -409,14 +420,14 @@ const item_t& quadtree<key_t, item_t>::at(key_t x, key_t y) const
 }
 
 /**
- * @brief Get a mutable reference on the item at the given coordinates
+ * @brief Get a mutable reference on the item at the given coordinates.
  *
  * If there is no point at the given coordinates, the default value is returned.
  * The mutable reference on the default value is not the real value.
  *
- * @param x X coordinate to get
- * @param y Y coordinate to get
- * @return Mutable reference on the value
+ * @param x X coordinate to get.
+ * @param y Y coordinate to get.
+ * @return Mutable reference on the value.
  */
 template<typename key_t, typename item_t>
 item_t& quadtree<key_t, item_t>::at(key_t x, key_t y)
@@ -426,12 +437,12 @@ item_t& quadtree<key_t, item_t>::at(key_t x, key_t y)
 }
 
 /**
- * @brief Find the item given and return the coordinates with the keys argument
+ * @brief Find the item given and return the coordinates with the keys argument.
  *
- * @param item Item to look for
+ * @param item Item to look for.
  * @param[out] keys Output containing the coordinates of the item, if it was found.
- * @param criterion Comparaison criterion to apply
- * @return Return true if the item was found
+ * @param criterion Comparaison criterion to apply.
+ * @return Return true if the item was found.
  */
 template<typename key_t, typename item_t>
 bool quadtree<key_t, item_t>::find(const item_t& item, epstl::pair<key_t>& keys,
@@ -441,11 +452,11 @@ bool quadtree<key_t, item_t>::find(const item_t& item, epstl::pair<key_t>& keys,
 }
 
 /**
- * @brief Tells if the item is contained in the tree
+ * @brief Tells if the item is contained in the tree.
  *
- * @param item Item to look for
- * @param criterion Comparaison criterion to apply
- * @return Return true if the item was found
+ * @param item Item to look for.
+ * @param criterion Comparaison criterion to apply.
+ * @return Return true if the item was found.
  */
 template<typename key_t, typename item_t>
 bool quadtree<key_t, item_t>::find(const item_t& item,
@@ -456,9 +467,9 @@ bool quadtree<key_t, item_t>::find(const item_t& item,
 }
 
 /**
- * @brief Remove the item at the given coordinates
- * @param x X coordinate to remove
- * @param y Y coordinate to remove
+ * @brief Remove the item at the given coordinates.
+ * @param x X coordinate to remove.
+ * @param y Y coordinate to remove.
  */
 template<typename key_t, typename item_t>
 void quadtree<key_t, item_t>::remove(key_t x, key_t y)
@@ -468,10 +479,10 @@ void quadtree<key_t, item_t>::remove(key_t x, key_t y)
 }
 
 /**
- * @brief Remove all item matching the given one
+ * @brief Remove all item matching the given one.
  *
- * @param item Item to remove
- * @param criterion Comparaison criterion to apply
+ * @param item Item to remove.
+ * @param criterion Comparaison criterion to apply.
  */
 template<typename key_t, typename item_t>
 void quadtree<key_t, item_t>::remove_all(const item_t& item,
@@ -482,9 +493,9 @@ void quadtree<key_t, item_t>::remove_all(const item_t& item,
 }
 
 /**
- * @brief Clone the quadrant and its children
- * @param quadrant Quadrant to clone
- * @return Return the pointer on the new quadrant
+ * @brief Clone the quadrant and its children.
+ * @param quadrant Quadrant to clone.
+ * @return Return the pointer on the new quadrant.
  */
 template<typename key_t, typename item_t>
 typename quadtree<key_t, item_t>::quadrant_t*
@@ -513,8 +524,8 @@ quadtree<key_t, item_t>::clone_quadrant(const quadrant_t* quadrant) const
 }
 
 /**
- * @brief Free the memory of the given quadrant
- * @param quadrant Quadrant to free
+ * @brief Free the memory of the given quadrant.
+ * @param quadrant Quadrant to free.
  */
 template<typename key_t, typename item_t>
 void quadtree<key_t, item_t>::free_quadrant(quadrant_t* quadrant)
@@ -531,13 +542,13 @@ void quadtree<key_t, item_t>::free_quadrant(quadrant_t* quadrant)
 }
 
 /**
- * @brief Insert the item on the quadrant at the given coordinates
+ * @brief Insert the item on the quadrant at the given coordinates.
  *
- * @param quadrant Quadrant to use (for recursive use)
- * @param x X coordinate of the item to insert
- * @param y Y coordinate of the item to insert
- * @param item Item to copy into the tree
- * @return true if the quadrant has been changed
+ * @param quadrant Quadrant to use (for recursive use).
+ * @param x X coordinate of the item to insert.
+ * @param y Y coordinate of the item to insert.
+ * @param item Item to copy into the tree.
+ * @return true if the quadrant has been changed.
  */
 template<typename key_t, typename item_t>
 bool quadtree<key_t, item_t>::insert_quadrant(quadrant_t* quadrant, key_t x,
@@ -599,11 +610,11 @@ bool quadtree<key_t, item_t>::insert_quadrant(quadrant_t* quadrant, key_t x,
 }
 
 /**
- * @brief Select the quadrant wich contains the given coordinates
- * @param quadrant Quadrant to consider
- * @param x X coordinate to look for
- * @param y Y coordinate to look for
- * @return Pointer on the pointer of the selected quadrant
+ * @brief Select the quadrant wich contains the given coordinates.
+ * @param quadrant Quadrant to consider.
+ * @param x X coordinate to look for.
+ * @param y Y coordinate to look for.
+ * @return Pointer on the pointer of the selected quadrant.
  */
 template<typename key_t, typename item_t>
 typename quadtree<key_t, item_t>::quadrant_t**
@@ -625,11 +636,11 @@ quadtree<key_t, item_t>::select_quadrant(quadrant_t* quadrant, key_t x,
 }
 
 /**
- * @brief Create the quadrant children of the parent
+ * @brief Create the quadrant children of the parent.
  *
- * @param parent Parent where to create children
+ * @param parent Parent where to create children.
  * @todo What happens if we can't devide by 2 ? Ex: parent quadrant is already 1x1 and key_t is int.
- * @warning Dynamic allocation with new operator
+ * @warning Dynamic allocation with new operator.
  */
 template<typename key_t, typename item_t>
 void quadtree<key_t, item_t>::create_quadrants(quadrant_t* parent)
@@ -681,13 +692,13 @@ void quadtree<key_t, item_t>::create_quadrants(quadrant_t* parent)
 }
 
 /**
- * @brief Get the value at the given position
+ * @brief Get the value at the given position.
  *
- * Return the default value if there is nothing at the given coordinates
- * @param quadrant Quadrant to look into
- * @param x X coordinate to look for
- * @param y Y coordinate to look for
- * @return Constant reference on the value
+ * Return the default value if there is nothing at the given coordinates.
+ * @param quadrant Quadrant to look into.
+ * @param x X coordinate to look for.
+ * @param y Y coordinate to look for.
+ * @return Constant reference on the value.
  */
 template<typename key_t, typename item_t>
 const item_t& quadtree<key_t, item_t>::get_value(quadrant_t* quadrant, key_t x,
@@ -712,16 +723,16 @@ const item_t& quadtree<key_t, item_t>::get_value(quadrant_t* quadrant, key_t x,
 }
 
 /**
- * @brief Get the value at the given position
+ * @brief Get the value at the given position.
  *
- * Return the default value if there is nothing at the given coordinates
+ * Return the default value if there is nothing at the given coordinates.
  *
- * @warning Need to set m_exposed_default_value before calling the method
+ * @warning Need to set m_exposed_default_value before calling the method.
  *
- * @param quadrant Quadrant to look into
- * @param x X coordinate to look for
- * @param y Y coordinate to look for
- * @return Mutable reference on the value
+ * @param quadrant Quadrant to look into.
+ * @param x X coordinate to look for.
+ * @param y Y coordinate to look for.
+ * @return Mutable reference on the value.
  */
 template<typename key_t, typename item_t>
 item_t&
@@ -746,11 +757,11 @@ quadtree<key_t, item_t>::get_value(quadrant_t* quadrant, key_t x, key_t y)
 }
 
 /**
- * @brief Recursive method to print the given quadran in the stream
+ * @brief Recursive method to print the given quadran in the stream.
  *
- * @param stream Stream to print into
- * @param quadrant Quadrant to print
- * @param shifts Shifts to apply
+ * @param stream Stream to print into.
+ * @param quadrant Quadrant to print.
+ * @param shifts Shifts to apply.
  */
 template<typename key_t, typename item_t>
 void quadtree<key_t, item_t>::print_quadrant(std::ostream& stream,
@@ -791,11 +802,11 @@ void quadtree<key_t, item_t>::print_quadrant(std::ostream& stream,
 }
 
 /**
- * @brief Print into the stream the separator as many as there are shifts
+ * @brief Print into the stream the separator as many as there are shifts.
  *
- * @param stream Stream to print into
- * @param shifts Number of separator to print
- * @param separator Separator to print. Use '\t' for tabulation for example
+ * @param stream Stream to print into.
+ * @param shifts Number of separator to print.
+ * @param separator Separator to print. Use '\t' for tabulation for example.
  */
 template<typename key_t, typename item_t>
 void quadtree<key_t, item_t>::shift_stream(std::ostream& stream,
@@ -808,11 +819,11 @@ void quadtree<key_t, item_t>::shift_stream(std::ostream& stream,
 }
 
 /**
- * @brief Recursive method for find
- * @param quadrant Quadrant to look into
- * @param item Item to look for
- * @param[out] keys Output for the coordinates of the item if it was found
- * @param criterion Comparaison criterion to apply
+ * @brief Recursive method for find.
+ * @param quadrant Quadrant to look into.
+ * @param item Item to look for.
+ * @param[out] keys Output for the coordinates of the item if it was found.
+ * @param criterion Comparaison criterion to apply.
  */
 template<typename key_t, typename item_t>
 bool quadtree<key_t, item_t>::find_quadrant(quadrant_t* quadrant,
@@ -852,12 +863,12 @@ bool quadtree<key_t, item_t>::find_quadrant(quadrant_t* quadrant,
 }
 
 /**
- * @brief Recursive method for remove method
+ * @brief Recursive method for remove method.
  *
- * @param quadrant Quadrant to look into
- * @param x X coordinate to look for
- * @param y Y coordinate to look for
- * @return Return true if the qudrant is left empty
+ * @param quadrant Quadrant to look into.
+ * @param x X coordinate to look for.
+ * @param y Y coordinate to look for.
+ * @return Return true if the qudrant is left empty.
  */
 template<typename key_t, typename item_t>
 bool quadtree<key_t, item_t>::remove_quadrant(quadrant_t* quadrant, key_t x,
@@ -926,11 +937,11 @@ bool quadtree<key_t, item_t>::remove_quadrant(quadrant_t* quadrant, key_t x,
 }
 
 /**
- * @brief Recursive method for remove_all method
- * @param quadrant Quadrant to look into
- * @param item Item to look for
- * @param criterion Comparaison criterion to apply
- * @return Return true if the quadrant was left empty
+ * @brief Recursive method for remove_all method.
+ * @param quadrant Quadrant to look into.
+ * @param item Item to look for.
+ * @param criterion Comparaison criterion to apply.
+ * @return Return true if the quadrant was left empty.
  */
 template<typename key_t, typename item_t>
 bool quadtree<key_t, item_t>::remove_all_quadrant(quadrant_t* quadrant,
@@ -1000,9 +1011,9 @@ bool quadtree<key_t, item_t>::remove_all_quadrant(quadrant_t* quadrant,
 }
 
 /**
- * @brief Recursive method to compute the depth of the quadrant
- * @param quadrant Quadrant where to compute the depth
- * @return Return the depth of the given quarant
+ * @brief Recursive method to compute the depth of the quadrant.
+ * @param quadrant Quadrant where to compute the depth.
+ * @return Return the depth of the given quarant.
  */
 template<typename key_t, typename item_t>
 size_t quadtree<key_t, item_t>::compute_depth(quadrant_t* quadrant) const

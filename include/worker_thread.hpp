@@ -21,7 +21,7 @@ class WorkerThreadTest;
 #endif
 
 /**
- * @brief Manage Work and allocate them to separated threads.
+ * @brief Manage work and allocate them to separated threads.
  *
  * The number of thread is limited by the number of thread of the device.
  */
@@ -32,7 +32,7 @@ class worker_thread
 #endif
   public:
     /**
-     * @brief Destructor : wait for all threads to finish
+     * @brief Destructor : wait for all threads to finish.
      */
     ~worker_thread()
     {
@@ -43,11 +43,10 @@ class worker_thread
     worker_thread& operator=(const worker_thread&) = delete;
     worker_thread& operator=(worker_thread&&) = delete;
     /**
-     * @fn void WorkerThread::newWork(std::function<void(Args...)> work, Args... arguments)
-     * @brief Add a new work
+     * @brief Add a new work.
      *
-     * @param work Function to call for work
-     * @param arguments Arguments of the function
+     * @param w Function to call for work.
+     * @param arguments Arguments of the function.
      */
     template<typename ...Args>
     static void new_work(const std::function<void(Args...)>& w,
@@ -65,6 +64,11 @@ class worker_thread
         }
         m_mutex.unlock();
     }
+    /**
+     * @brief Add a new work (no arguments).
+     *
+     * @param w Function to call for work.
+     */
     static void new_work(const std::function<void()>& w)
     {
         m_mutex.lock();
@@ -78,26 +82,38 @@ class worker_thread
         }
         m_mutex.unlock();
     }
-
+    /**
+     * @brief Add a new work (method version).
+     *
+     * @param object_instance Instance object to be used when calling the method.
+     * @param method Method of object_instance to be called for work.
+     * @param arguments Arguments of the function.
+     */
     template<typename I, typename M, typename ...Args>
-    static void new_work(I* object_instance, M func, Args... arguments)
+    static void new_work(I* object_instance, M method, Args... arguments)
     {
-        new_work([object_instance, func, arguments...]()
+        new_work([object_instance, method, arguments...]()
         {
-            std::bind(func, object_instance, arguments...)();
+            std::bind(method, object_instance, arguments...)();
         });
     }
+    /**
+     * @brief Add a new work (method version, no arguments).
+     *
+     * @param object_instance Instance object to be used when calling the method.
+     * @param method Method of object_instance to be called for work.
+     */
     template<typename I, typename M>
-    static void new_work(I* objectInstance, M func)
+    static void new_work(I* objectInstance, M method)
     {
-        new_work([objectInstance, func]()
+        new_work([objectInstance, method]()
         {
-            std::bind(func, objectInstance)();
+            std::bind(method, objectInstance)();
         });
     }
 
     /**
-     * @brief Wait for all threads to finish
+     * @brief Wait for all threads to finish.
      */
     static void wait_for_join()
     {
@@ -109,21 +125,26 @@ class worker_thread
     }
 
   private:
+    /**
+     * @brief Singleton instance getter.
+     * @return Return the singleton instance.
+     */
     static worker_thread& getInstance()
     {
         static worker_thread instance;
         return instance;
     }
+
+    /**
+     * @brief Default constructor.
+     */
+    worker_thread() = default;
+
     /**
      * @brief Worker main function.
      *
-     * Start the firstWork and then start the works of the waiting list
-     * @param [in] firstWork First work to start
-     */
-    worker_thread() = default;
-    /**
-     * @brief Add a new work to the working list. Start it immedialty if it is possible
-     * @param [in] work Work to add
+     * Start the first_work and then start the works of the waiting list.
+     * @param [in] first_work First work to start.
      */
     static void worker(std::shared_ptr<abstract_work_t> first_work)
     {
@@ -145,7 +166,7 @@ class worker_thread
     /**
      * @brief Work waiting list.
      *
-     * It is only used if there is not enough thread available at the moment
+     * It is only used if there is not enough thread available at the moment.
      */
     static inline std::list<std::shared_ptr<abstract_work_t>> m_waiting_list;
 

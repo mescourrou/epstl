@@ -6,10 +6,13 @@ namespace epstl
 {
 
 #ifdef USE_CUSTOM_STL
-typedef uint32_t size_t; ///< Standard size
+/// Standard size
+typedef uint32_t size_t;
 #else
-typedef std::size_t size_t; ///< Standard size
+/// Standard size
+typedef std::size_t size_t;
 #endif
-typedef uint64_t ssize_t; ///< Extended size
+/// Extended size
+typedef uint64_t ssize_t;
 
 } // namespace epstl

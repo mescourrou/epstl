@@ -15,7 +15,7 @@ class WorkTest;
 #endif
 
 /**
- * @brief Base class for all templates implementation of Work
+ * @brief Base class for all templates implementation of work.
  */
 class abstract_work_t
 {
@@ -23,20 +23,20 @@ class abstract_work_t
     friend class events::WorkTest;
 #endif
   public:
-    /// @brief Constructor
+    /// @brief Constructor.
     abstract_work_t() = default;
-    /// @brief Destructor
+    /// @brief Destructor.
     virtual ~abstract_work_t() = default;
 
     /**
-     * @brief Start the work
+     * @brief Start the work.
      */
     virtual void run() = 0;
 };
 
 /**
- * @class Work
- * @brief Template class for creating a work
+ * @class work
+ * @brief Template class for creating a work.
  *
  * The template arguments take the type of the function arguments.
  *
@@ -45,7 +45,7 @@ class abstract_work_t
  * auto callback = [](std::string word, double number) {
  *     std::cout << word << " => " << number << std::endl;
  * };
- * Work<std::string, double> myWork(callback, "bla", 4.2);
+ * work<std::string, double> myWork(callback, "bla", 4.2);
  * myWork.run();
  * @endcode
  *
@@ -60,9 +60,9 @@ class work : public abstract_work_t
 {
   public:
     /**
-     * @brief Construct a work with the given function
-     * @param func Function to do
-     * @param arguments Arguments of the function
+     * @brief Construct a work with the given function.
+     * @param func Function to do.
+     * @param arguments Arguments of the function.
      */
     explicit work(const std::function<void(Args...)>& func,
                   Args... arguments) : m_func(func),
@@ -70,7 +70,7 @@ class work : public abstract_work_t
     ~work() override = default;
 
     /**
-     * @brief Run the job
+     * @brief Run the job.
      */
     void run() override
     {
@@ -78,8 +78,10 @@ class work : public abstract_work_t
     }
 
   private:
-    std::function<void(Args...)> m_func; ///< Function to activate in run method
-    std::tuple<Args...> m_arguments; ///< Arguments of the function
+    /// Function to activate in run method.
+    std::function<void(Args...)> m_func;
+    /// Arguments of the function.
+    std::tuple<Args...> m_arguments;
 
 
 };
@@ -89,9 +91,9 @@ class work : public abstract_work_t
 {
   public:
     /**
-     * @brief Construct a work with the given function
-     * @param func Function to do
-     * @param arguments Arguments of the function
+     * @brief Construct a work with the given function.
+     * @param func Function to do.
+     * @param arguments Arguments of the function.
      */
     explicit work(const std::function<void(arg_t)>& func,
                   arg_t argument) : m_func(func),
@@ -99,7 +101,7 @@ class work : public abstract_work_t
     ~work() override = default;
 
     /**
-     * @brief Run the job
+     * @brief Run the job.
      */
     void run() override
     {
@@ -107,8 +109,10 @@ class work : public abstract_work_t
     }
 
   private:
-    std::function<void(arg_t)> m_func; ///< Function to activate in run method
-    arg_t m_argument; ///< Arguments of the function
+    /// Function to activate in run method.
+    std::function<void(arg_t)> m_func;
+    /// Arguments of the function.
+    arg_t m_argument;
 
 
 };
@@ -122,13 +126,13 @@ class work<void> : public abstract_work_t
 {
   public:
     /**
-     * @brief Construct a work with the given function
-     * @param func Function to do
+     * @brief Construct a work with the given function.
+     * @param func Function to do.
      */
     explicit work(const std::function<void(void)>& func) : m_func(func) {}
     ~work() override = default;
     /**
-     * @brief Run the job
+     * @brief Run the job.
      */
     void run() override
     {
@@ -136,7 +140,8 @@ class work<void> : public abstract_work_t
     }
 
   private:
-    std::function<void(void)> m_func; ///< Function to activate in run method.
+    /// Function to activate in run method.
+    std::function<void(void)> m_func;
 };
 
 } // namespace epstl

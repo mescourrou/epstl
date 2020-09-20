@@ -17,53 +17,59 @@
 namespace epstl
 {
 /**
- * @brief Key based map
+ * @brief Key based map.
  */
 template <typename key_t, typename item_t>
 class map : public container
 {
   private:
     /**
-     * @brief Map tree node
+     * @brief Map tree node.
      */
     struct node_t
     {
-        node_t* left_node = nullptr; ///< Left subtree
-        node_t* right_node = nullptr; ///< Right subtree
-        node_t* parent = nullptr; ///< Parent (nullptr for the root)
+        /// Left subtree.
+        node_t* left_node = nullptr;
+        /// Right subtree.
+        node_t* right_node = nullptr;
+        /// Parent (nullptr for the root).
+        node_t* parent = nullptr;
 
-        epstl::pair<key_t, item_t> content; ///< Key-value storage
+        /// Key-value storage.
+        epstl::pair<key_t, item_t> content;
     };
 
     /**
-     * @brief Types of iterators, for template specialization
+     * @brief Types of iterators, for template specialization.
      */
     enum iterator_types
     {
-        KEY_ORDER,  ///< A -> Z order
-        KEY_REVERSE_ORDER ///< Z -> A order
+        /// A -> Z order.
+        KEY_ORDER,
+        /// Z -> A order.
+        KEY_REVERSE_ORDER
     };
 
     /**
-     * @brief Template of the iterator
+     * @brief Template of the iterator.
      *
-     * @tparam ret_t Type of return (epstl::pair<key_t, item_t> constant or not)
-     * @tparam it_node_t Type of node (constant or not)
-     * @tparam it_type Type of iterator (cf iterator_types enum)
+     * @tparam ret_t Type of return (epstl::pair<key_t, item_t> constant or not).
+     * @tparam it_node_t Type of node (constant or not).
+     * @tparam it_type Type of iterator (cf iterator_types enum).
      */
     template<typename ret_t, typename it_node_t, iterator_types it_type = KEY_ORDER>
     class iterator_t
     {
       public:
         /**
-         * @brief Constructor
-         * @param start_node First node to start with
+         * @brief Constructor.
+         * @param start_node First node to start with.
          */
         iterator_t(it_node_t* start_node) : m_current_node(start_node) {}
 
         /**
-         * @brief Pre-increment operator
-         * @return Return the incremented iterator
+         * @brief Pre-increment operator.
+         * @return Return the incremented iterator.
          */
         iterator_t& operator++()
         {
@@ -94,9 +100,9 @@ class map : public container
         }
 
         /**
-         * @brief Decrement operator
-         * @todo Map decrement operator to implement
-         * @return Return the decremented iterator
+         * @brief Decrement operator.
+         * @todo Map decrement operator to implement.
+         * @return Return the decremented iterator.
          */
         iterator_t& operator--()
         {
@@ -104,8 +110,8 @@ class map : public container
         }
 
         /**
-         * @brief Star access operator
-         * @return Reference on the current element
+         * @brief Star access operator.
+         * @return Reference on the current element.
          */
         ret_t& operator*()
         {
@@ -113,8 +119,8 @@ class map : public container
         }
 
         /**
-         * @brief Pointer access operator
-         * @return Return a pointer on the current element
+         * @brief Pointer access operator.
+         * @return Return a pointer on the current element.
          */
         ret_t* operator->()
         {
@@ -122,8 +128,8 @@ class map : public container
         }
 
         /**
-         * @brief Star access operator
-         * @return Reference on the current element
+         * @brief Star access operator.
+         * @return Reference on the current element.
          */
         ret_t& operator*() const
         {
@@ -131,8 +137,8 @@ class map : public container
         }
 
         /**
-         * @brief Pointer access operator
-         * @return Return a pointer on the current element
+         * @brief Pointer access operator.
+         * @return Return a pointer on the current element.
          */
         ret_t* operator->() const
         {
@@ -140,9 +146,9 @@ class map : public container
         }
 
         /**
-         * @brief Comparison operator
-         * @param it Iterator to compare with
-         * @return Return true if the two are differents
+         * @brief Comparison operator.
+         * @param it Iterator to compare with.
+         * @return Return true if the two are differents.
          */
         bool operator!=(const iterator_t& it) const
         {
@@ -150,36 +156,37 @@ class map : public container
         }
 
         /**
-         * @brief Bool operator to test if a map node is accessible
+         * @brief Bool operator to test if a map node is accessible.
          */
         operator bool()
         {
             return m_current_node;
         }
       private:
-        it_node_t* m_current_node; ///< Current used node
+        /// Current used node.
+        it_node_t* m_current_node;
 
     };
   public:
-    /// Standard iterator
+    /// Standard iterator.
     using iterator = iterator_t<epstl::pair<key_t, item_t>, node_t, KEY_ORDER>;
-    /// Standard constant iterator
+    /// Standard constant iterator.
     using const_iterator =
         iterator_t<const epstl::pair<key_t, item_t>, const node_t, KEY_ORDER>;
-    /// Reverse iterator
+    /// Reverse iterator.
     using reverse_iterator =
         iterator_t<epstl::pair<key_t, item_t>, node_t, KEY_REVERSE_ORDER>;
-    /// Constant reverse iterator
+    /// Constant reverse iterator.
     using const_reverse_iterator =
         iterator_t<const epstl::pair<key_t, item_t>, const node_t, KEY_REVERSE_ORDER>;
 
     /**
-    * @brief Default constructor
+    * @brief Default constructor.
     */
     map() = default;
     /**
-     * @brief Create a map with the given less operator
-     * @param less_operator Less (<) operator to use
+     * @brief Create a map with the given less operator.
+     * @param less_operator Less (<) operator to use.
      */
     map(bool (*less_operator)(const key_t& k1, const key_t& k2)) :
         m_less_operator(less_operator) {}
@@ -192,8 +199,7 @@ class map : public container
     bool insert(key_t key, item_t item);
 
     /**
-     * @brief Get the height of the map tree
-     * @return
+     * @brief Get the height of the map tree.
      */
     epstl::size_t height() const noexcept
     {
@@ -205,7 +211,7 @@ class map : public container
     size_t erase(const key_t& key);
 
     /**
-     * @brief Get the standard begin iterator
+     * @brief Get the standard begin iterator.
      */
     iterator begin()
     {
@@ -213,7 +219,7 @@ class map : public container
     }
 
     /**
-     * @brief Get the standard end iterator
+     * @brief Get the standard end iterator.
      */
     iterator end()
     {
@@ -221,7 +227,7 @@ class map : public container
     }
 
     /**
-     * @brief Get the standard begin constant iterator
+     * @brief Get the standard begin constant iterator.
      */
     const_iterator begin() const
     {
@@ -229,7 +235,7 @@ class map : public container
     }
 
     /**
-     * @brief Get the standard end constant iterator
+     * @brief Get the standard end constant iterator.
      */
     const_iterator end() const
     {
@@ -237,7 +243,7 @@ class map : public container
     }
 
     /**
-     * @brief Get the reverse begin iterator
+     * @brief Get the reverse begin iterator.
      */
     reverse_iterator rbegin()
     {
@@ -245,7 +251,7 @@ class map : public container
     }
 
     /**
-     * @brief Get the reverse end iterator
+     * @brief Get the reverse end iterator.
      */
     reverse_iterator rend()
     {
@@ -253,7 +259,7 @@ class map : public container
     }
 
     /**
-     * @brief Get the reverse begin constant iterator
+     * @brief Get the reverse begin constant iterator.
      */
     const_reverse_iterator rbegin() const
     {
@@ -261,7 +267,7 @@ class map : public container
     }
 
     /**
-     * @brief Get the reverse begin constant iterator
+     * @brief Get the reverse begin constant iterator.
      */
     const_reverse_iterator rend() const
     {
@@ -284,16 +290,18 @@ class map : public container
     static node_t* max_node(node_t* node);
     static const node_t* max_node(const node_t* node);
 
-    /// Less (<) operator to use
+    /// Less (<) operator to use.
     bool (*m_less_operator)(const key_t& k1, const key_t& k2) = &less<key_t, key_t>;
-    epstl::size_t m_size = 0; ///< Size of the map
+    /// Size of the map.
+    epstl::size_t m_size = 0;
 
-    node_t* m_root = nullptr; ///< Root node of the tree
+    /// Root node of the tree
+    node_t* m_root = nullptr;
 };
 
 /**
- * @brief Destructor which free the contained values
- * @todo Destructor to implement
+ * @brief Destructor which free the contained values.
+ * @todo Destructor to implement.
  */
 template<typename key_t, typename item_t>
 map<key_t, item_t>::~map()
@@ -302,7 +310,7 @@ map<key_t, item_t>::~map()
 }
 
 /**
- * @brief Get the size of the map : number of items inside
+ * @brief Get the size of the map : number of items inside.
  */
 template <typename key_t, typename item_t>
 size_t map<key_t, item_t>::size() const noexcept
@@ -311,8 +319,8 @@ size_t map<key_t, item_t>::size() const noexcept
 }
 
 /**
- * @brief Get the value at the given key
- * @todo To implement
+ * @brief Get the value at the given key.
+ * @todo To implement.
  */
 template<typename key_t, typename item_t>
 item_t& map<key_t, item_t>::operator[](const key_t& key)
@@ -321,10 +329,10 @@ item_t& map<key_t, item_t>::operator[](const key_t& key)
 }
 
 /**
- * @brief Insert the item at the given key
- * @param key Key of the item
- * @param item Item to insert
- * @return Return true if the insertion was successful
+ * @brief Insert the item at the given key.
+ * @param key Key of the item.
+ * @param item Item to insert.
+ * @return Return true if the insertion was successful.
  */
 template<typename key_t, typename item_t>
 bool map<key_t, item_t>::insert(key_t key, item_t item)
@@ -351,9 +359,9 @@ bool map<key_t, item_t>::insert(key_t key, item_t item)
 }
 
 /**
- * @brief Get a const pointer on the item at the given key
- * @param key Key to look for
- * @return Const pointer on the value or nullptr if the key was not found
+ * @brief Get a const pointer on the item at the given key.
+ * @param key Key to look for.
+ * @return Const pointer on the value or nullptr if the key was not found.
  */
 template<typename key_t, typename item_t>
 const item_t* map<key_t, item_t>::at(const key_t& key) const noexcept
@@ -366,9 +374,9 @@ const item_t* map<key_t, item_t>::at(const key_t& key) const noexcept
 }
 
 /**
- * @brief Get a mutable pointer on the item at the given key
- * @param key Key to look for
- * @return Mutable pointer on the value or nullptr if the key was not found
+ * @brief Get a mutable pointer on the item at the given key.
+ * @param key Key to look for.
+ * @return Mutable pointer on the value or nullptr if the key was not found.
  */
 template<typename key_t, typename item_t>
 item_t* map<key_t, item_t>::at(const key_t& key) noexcept
@@ -381,9 +389,9 @@ item_t* map<key_t, item_t>::at(const key_t& key) noexcept
 }
 
 /**
- * @brief Erase the given key
- * @param key Key to erase
- * @return Return the new size of the map
+ * @brief Erase the given key.
+ * @param key Key to erase.
+ * @return Return the new size of the map.
  */
 template<typename key_t, typename item_t>
 size_t map<key_t, item_t>::erase(const key_t& key)
@@ -394,9 +402,9 @@ size_t map<key_t, item_t>::erase(const key_t& key)
 }
 
 /**
- * @brief Free the tree behind the given root
- * @param node Root of the tree to free
- * @return Return true if the node was free
+ * @brief Free the tree behind the given root.
+ * @param node Root of the tree to free.
+ * @return Return true if the node was free.
  */
 template<typename key_t, typename item_t>
 bool map<key_t, item_t>::free_recursive(map::node_t* node)
@@ -417,8 +425,8 @@ bool map<key_t, item_t>::free_recursive(map::node_t* node)
 }
 
 /**
- * @brief Compute the height of the tree with the given root
- * @param root Root of the tree where to compute the height
+ * @brief Compute the height of the tree with the given root.
+ * @param root Root of the tree where to compute the height.
  */
 template<typename key_t, typename item_t>
 size_t map<key_t, item_t>::height(node_t* root) const noexcept
@@ -429,12 +437,12 @@ size_t map<key_t, item_t>::height(node_t* root) const noexcept
 }
 
 /**
- * @brief Balance given node
+ * @brief Balance given node.
  *
  * Does a left or a right rotation if a branch is heavier than the other.
  * This method is not recursive, it does not balance the whole tree.
  *
- * @param node Node to balance
+ * @param node Node to balance.
  */
 template<typename key_t, typename item_t>
 void map<key_t, item_t>::balance_node(map::node_t* node) noexcept
@@ -449,11 +457,11 @@ void map<key_t, item_t>::balance_node(map::node_t* node) noexcept
 }
 
 /**
- * @brief Recusive version of insert
- * @param current_node Root of the tree to insert into
- * @param key Key of the item
- * @param item Item to insert
- * @return Return true if the item was inserted
+ * @brief Recusive version of insert.
+ * @param current_node Root of the tree to insert into.
+ * @param key Key of the item.
+ * @param item Item to insert.
+ * @return Return true if the item was inserted.
  */
 template<typename key_t, typename item_t>
 bool map<key_t, item_t>::insert_recursive(node_t* current_node, key_t& key,
@@ -500,10 +508,10 @@ bool map<key_t, item_t>::insert_recursive(node_t* current_node, key_t& key,
 }
 
 /**
- * @brief Erase the given key in the tree with the given root
+ * @brief Erase the given key in the tree with the given root.
  *
- * @param current_node Root of the tree where to find the key and erase it
- * @return Return true if the key was found in the tree and was erased
+ * @param current_node Root of the tree where to find the key and erase it.
+ * @return Return true if the key was found in the tree and was erased.
  */
 template<typename key_t, typename item_t>
 bool map<key_t, item_t>::erase_recursive(map::node_t* current_node,
@@ -582,9 +590,9 @@ bool map<key_t, item_t>::erase_recursive(map::node_t* current_node,
 }
 
 /**
- * @brief Search for the key and return the node found
- * @param key Key to look for
- * @return Pointer on the note. Null if not found
+ * @brief Search for the key and return the node found.
+ * @param key Key to look for.
+ * @return Pointer on the note. Null if not found.
  */
 template<typename key_t, typename item_t>
 auto map<key_t, item_t>::search(const key_t& key) const noexcept ->
@@ -604,8 +612,8 @@ map<key_t, item_t>::node_t*
 }
 
 /**
- * @brief Do a left rotation on the given node
- * @param node Node to rotate
+ * @brief Do a left rotation on the given node.
+ * @param node Node to rotate.
  */
 template<typename key_t, typename item_t>
 void map<key_t, item_t>::left_rotate(map::node_t* node) noexcept
@@ -635,8 +643,8 @@ void map<key_t, item_t>::left_rotate(map::node_t* node) noexcept
 }
 
 /**
- * @brief Do a right rotation on the given node
- * @param node Node to rotate
+ * @brief Do a right rotation on the given node.
+ * @param node Node to rotate.
  */
 template<typename key_t, typename item_t>
 void map<key_t, item_t>::right_rotate(map::node_t* node) noexcept
@@ -666,7 +674,7 @@ void map<key_t, item_t>::right_rotate(map::node_t* node) noexcept
 }
 
 /**
- * @brief Get the node with the biggest key of the given tree
+ * @brief Get the node with the biggest key of the given tree.
  */
 template<typename key_t, typename item_t>
 auto map<key_t, item_t>::max_node(map::node_t* node) -> map::node_t*
@@ -677,7 +685,7 @@ auto map<key_t, item_t>::max_node(map::node_t* node) -> map::node_t*
 }
 
 /**
- * @brief Get the node with the biggest key of the given tree
+ * @brief Get the node with the biggest key of the given tree.
  */
 template<typename key_t, typename item_t>
 auto map<key_t, item_t>::max_node(const map::node_t* node) -> const map::node_t*
@@ -688,7 +696,7 @@ auto map<key_t, item_t>::max_node(const map::node_t* node) -> const map::node_t*
 }
 
 /**
- * @brief Get the node with the smallest key of the given tree
+ * @brief Get the node with the smallest key of the given tree.
  */
 template<typename key_t, typename item_t>
 auto map<key_t, item_t>::min_node(map::node_t* node) -> map::node_t*
@@ -699,7 +707,7 @@ auto map<key_t, item_t>::min_node(map::node_t* node) -> map::node_t*
 }
 
 /**
- * @brief Get the node with the smallest key of the given tree
+ * @brief Get the node with the smallest key of the given tree.
  */
 template<typename key_t, typename item_t>
 auto map<key_t, item_t>::min_node(const map::node_t* node) -> const map::node_t*

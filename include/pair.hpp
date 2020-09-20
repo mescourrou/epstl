@@ -7,19 +7,22 @@ namespace epstl
 #ifdef USE_CUSTOM_STL
 
 /**
- * @brief Standard pair structure
+ * @brief Standard pair structure.
+ *
+ * @tparam T1 First type.
+ * @tparam T2 Second type.
  */
 template <typename T1, typename T2 = T1>
 struct pair
 {
     /**
-     * @brief Default constructor
+     * @brief Default constructor.
      */
     pair() = default;
     /**
-     * @brief Construct the pair with the given values
-     * @param first First value
-     * @param second Second value
+     * @brief Construct the pair with the given values.
+     * @param first First value.
+     * @param second Second value.
      */
     pair(T1 first, T2 second) : first(first), second(second) {}
 
@@ -44,8 +47,10 @@ struct pair
     }
 #endif
 
-    T1 first;   ///< First value
-    T2 second;  ///< Second value
+    /// First value.
+    T1 first;
+    /// Second value.
+    T2 second;
 
 };
 

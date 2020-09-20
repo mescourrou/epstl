@@ -6,6 +6,13 @@
 
 namespace epstl
 {
+
+/**
+ * @brief Representatoin of a point of given dimension.
+ *
+ * @tparam k_size Number of dimensions.
+ * @tparam k_type Data type.
+ */
 #if __cplusplus >= 201702L
 template<size_t k_size, typename k_type = double, typename = typename std::enable_if_t<(k_size > 0)
          >>
@@ -16,7 +23,15 @@ template<size_t k_size, typename k_type = double, typename = typename std::enabl
 class Point
 {
   public:
+    /**
+     * @brief Default constructor.
+     */
     Point() = default;
+
+    /**
+     * @brief Construct the point with a initializer list.
+     * @param coordinates Point coordinates. Must be maximum at the size k_size.
+     */
     Point(std::initializer_list<k_type> coordinates)
     {
         // Too many coordinates given in initializer_list
@@ -44,7 +59,7 @@ class Point
         return k_size;
     }
 
-    /// @brief Get and modify the x coordinate (0)
+    /// @brief Get and modify the x coordinate (0).
 #if __cplusplus >= 201702L
     template<typename = std::enable_if_t<(k_size >= 1) >>
 #endif
@@ -52,7 +67,7 @@ class Point
     {
         return m_coordinates[0];
     }
-    /// @brief Get and modify the y coordinate (1)
+    /// @brief Get and modify the y coordinate (1).
 #if __cplusplus >= 201702L
     template<typename = std::enable_if_t<(k_size >= 2) >>
 #endif
@@ -60,7 +75,7 @@ class Point
     {
         return m_coordinates[1];
     }
-    /// @brief Get and modify the z coordinate (2)
+    /// @brief Get and modify the z coordinate (2).
 #if __cplusplus >= 201702L
     template<typename = std::enable_if_t<(k_size >= 3) >>
 #endif
@@ -68,7 +83,7 @@ class Point
     {
         return m_coordinates[2];
     }
-    /// @brief Get the x coordinate (0)
+    /// @brief Get the x coordinate (0).
 #if __cplusplus >= 201702L
     template<typename = std::enable_if_t<(k_size >= 1) >>
 #endif
@@ -76,7 +91,7 @@ class Point
     {
         return m_coordinates[0];
     }
-    /// @brief Get the y coordinate (1)
+    /// @brief Get the y coordinate (1).
 #if __cplusplus >= 201702L
     template<typename = std::enable_if_t<(k_size >= 2) >>
 #endif
@@ -84,7 +99,7 @@ class Point
     {
         return m_coordinates[1];
     }
-    /// @brief Get the z coordinate (2)
+    /// @brief Get the z coordinate (2).
 #if __cplusplus >= 201702L
     template<typename = std::enable_if_t<(k_size >= 3) >>
 #endif
@@ -94,6 +109,7 @@ class Point
     }
 
   private:
+    /// @brief Array of the coordinates
     k_type m_coordinates[k_size];
 };
 

@@ -7,7 +7,7 @@ namespace epstl
 {
 
 /**
- * @brief Point quadtree
+ * @brief Point quadtree.
  *
  * Create a quadtree structure with one point maximum by quadrant.
  *
@@ -43,31 +43,31 @@ class quadtree_region : public quadtree<key_t, bool>
     bool isIndide(const vector<key_t>& polygon, key_t x, key_t y) const;
   public:
     /**
-     * @brief Construct a quadtree with the given center and width/height
-     * @param center_x X coordinate of the center
-     * @param center_y Y coordinate of the center
-     * @param width Width of the root
-     * @param height Height of the root
+     * @brief Construct a quadtree with the given center and width/height.
+     * @param center_x X coordinate of the center.
+     * @param center_y Y coordinate of the center.
+     * @param width Width of the root.
+     * @param height Height of the root.
      */
     explicit quadtree_region(key_t center_x, key_t center_y, key_t width,
                              key_t height) :
         quadtree<key_t, bool>(center_x, center_y, width, height, false) {}
 
     /**
-     * @brief Construct a quadtree centered on 0,0, with the given width/height
-     * @param width Width of the root
-     * @param height Height of the root
+     * @brief Construct a quadtree centered on 0,0, with the given width/height.
+     * @param width Width of the root.
+     * @param height Height of the root.
      */
     explicit quadtree_region(key_t width, key_t height) :
         quadtree<key_t, bool>(0, 0, width, height) {}
 
     /**
-     * @brief Construct a quadtree with the given center and width/height and the default value
-     * @param center_x X coordinate of the center
-     * @param center_y Y coordinate of the center
-     * @param width Width of the root
-     * @param height Height of the root
-     * @param default_value Default value to use
+     * @brief Construct a quadtree with the given center and width/height and the default value.
+     * @param center_x X coordinate of the center.
+     * @param center_y Y coordinate of the center.
+     * @param width Width of the root.
+     * @param height Height of the root.
+     * @param default_value Default value to use.
      */
     explicit quadtree_region(key_t center_x, key_t center_y, key_t width,
                              key_t height,
@@ -124,14 +124,14 @@ class quadtree_region : public quadtree<key_t, bool>
 };
 
 /**
- * @brief Insert the item at the given coordinates
+ * @brief Insert the item at the given coordinates.
  *
  * Update the depth.
  *
- * @param x X coordinate of the item
- * @param y Y coordinate of the item
- * @param item Item to copy in the tree
- * @return Size of the new tree (number of items)
+ * @param x X coordinate of the item.
+ * @param y Y coordinate of the item.
+ * @param item Item to copy in the tree.
+ * @return Size of the new tree (number of items).
  */
 template<typename key_t>
 size_t quadtree_region<key_t>::insert(key_t x, key_t y, const bool& item)
@@ -193,12 +193,12 @@ void quadtree_region<key_t>::print(std::ostream& stream) const
 }
 
 /**
- * @brief Insert the item on the quadrant at the given coordinates
+ * @brief Insert the item on the quadrant at the given coordinates.
  *
- * @param quadrant Quadrant to use (for recursive use)
- * @param x X coordinate of the item to insert
- * @param y Y coordinate of the item to insert
- * @param item Item to copy into the tree
+ * @param quadrant Quadrant to use (for recursive use).
+ * @param x X coordinate of the item to insert.
+ * @param y Y coordinate of the item to insert.
+ * @param item Item to copy into the tree.
  */
 template<typename key_t>
 bool quadtree_region<key_t>::insert_quadrant(typename
@@ -280,13 +280,13 @@ bool quadtree_region<key_t>::insert_quadrant(typename
 }
 
 /**
- * @brief Get the value at the given position
+ * @brief Get the value at the given position.
  *
- * Return the default value if there is nothing at the given coordinates
- * @param quadrant Quadrant to look into
- * @param x X coordinate to look for
- * @param y Y coordinate to look for
- * @return Constant reference on the value
+ * Return the default value if there is nothing at the given coordinates.
+ * @param quadrant Quadrant to look into.
+ * @param x X coordinate to look for.
+ * @param y Y coordinate to look for.
+ * @return Constant reference on the value.
  */
 template<typename key_t>
 const bool& quadtree_region<key_t>::get_value(typename
@@ -309,16 +309,16 @@ const bool& quadtree_region<key_t>::get_value(typename
 }
 
 /**
- * @brief Get the value at the given position
+ * @brief Get the value at the given position.
  *
- * Return the default value if there is nothing at the given coordinates
+ * Return the default value if there is nothing at the given coordinates.
  *
- * @warning Need to set m_exposed_default_value before calling the method
+ * @warning Need to set m_exposed_default_value before calling the method.
  *
- * @param quadrant Quadrant to look into
- * @param x X coordinate to look for
- * @param y Y coordinate to look for
- * @return Mutable reference on the value
+ * @param quadrant Quadrant to look into.
+ * @param x X coordinate to look for.
+ * @param y Y coordinate to look for.
+ * @return Mutable reference on the value.
  */
 template<typename key_t>
 bool&
